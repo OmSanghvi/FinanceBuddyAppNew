@@ -48,7 +48,7 @@ const CategoriesPage = () => {
                     </Button>
                 </CardHeader>
                 <CardContent>
-                    <DataTable filterKey = "email" columns={columns} data={categories} onDelete = {(row)=>{const ids = row.map((r)=>r.original.id); 
+                    <DataTable filterKey = "category" columns={columns} data={categories} onDelete = {(row)=>{const ids = row.map((r)=>r.original.id);
                         deleteCategories.mutate({ids});
                     }} disabled = {isDisabled}/>
                 </CardContent>

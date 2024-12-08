@@ -1,0 +1,551 @@
+/* styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --background: #ffffff;
+    --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #0a0a0a;
+        --foreground: #ededed;
+    }
+}
+@font-face {
+    font-family: "Lilita One", sans-serif;
+    src: url('./LilitaOne-Regular.ttf') format('truetype');
+}
+
+body {
+    color: var(--foreground);
+    background: var(--background);
+    font-weight: 400;
+    font-style: normal;
+    font-family: "Lilita One", sans-serif; /* Add this line */
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 20px);
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: "Lilita One", sans-serif; /* Add this line if needed */
+}
+
+.navbar.stationary {
+    width: 100%;
+    left: 0;
+    transform: none;
+    background-color: rgba(0, 0, 0, 0);
+    padding-left: 10%;
+    padding-right: 10%;
+    color: white;
+}
+
+.navbar.floating {
+    background-color: white;
+    color: #102E4A;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 30px;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 65%;
+    height: 66px;
+    position: fixed;
+    z-index: 1001;
+}
+
+.navbar a,
+.navbar .auth-buttons .sign-in,
+.navbar .auth-buttons .sign-up {
+    color: inherit;
+    transition: color 0.3s ease-in-out;
+}
+
+.navbar.floating a:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.navbar .auth-buttons .sign-in,
+.navbar .auth-buttons .sign-up {
+    background: #F3B84B;
+    color: white;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.navbar .auth-buttons .sign-in:hover,
+.navbar .auth-buttons .sign-up:hover {
+    transform: scale(1.05);
+}
+
+.navbar .links a,
+.navbar .auth-buttons .sign-in,
+.navbar .auth-buttons .sign-up {
+    font-size: 1.2rem;
+}
+
+.navbar .menu-button {
+    display: none;
+}
+
+.navbar .logo {
+    display: flex;
+    align-items: center;
+    font-size: 2.4rem;
+    padding-left: 10px;
+}
+
+
+
+@media (max-width: 768px) {
+    .navbar .links a {
+        margin: 0 15px;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .navbar .menu-button {
+        display: block;
+    }
+}
+
+.navbar .sidebar {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .navbar .sidebar {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffc75f;
+        color: white;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
+        padding: 20px;
+        font-size: 2rem;
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(100%);
+    }
+
+    .navbar .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .navbar.floating {
+        background-color: white;
+        color: black;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 30px;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 65%;
+        height: 66px;
+        position: fixed;
+        z-index: 1001;
+    }
+}
+
+.navbar .sidebar a {
+    margin: 20px 0;
+    text-decoration: none;
+    color: white;
+}
+
+.navbar .sidebar .close-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.navbar .sidebar .auth-buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 20px;
+    margin-left: 100px;
+}
+
+.navbar .sidebar .auth-buttons .sign-in,
+.navbar .sidebar .auth-buttons .sign-up {
+    background-color: white;
+    color: #ffc75f;
+    border: 1px solid #ffc75f;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    font-size: 1.5rem;
+}
+
+.navbar .sidebar .auth-buttons .sign-in:hover,
+.navbar .sidebar .auth-buttons .sign-up:hover {
+    background-color: #ffc75f;
+    color: white;
+}
+
+.chaos-button {
+    background-color: #ffc75f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.chaos-button:hover {
+    background-color: #ff9f1c;
+    transform: scale(1.05);
+}
+/* Add spacing between sign-in and sign-up buttons */
+.navbar .auth-buttons .button {
+    margin-right: 10px; /* Adjust the value as needed */
+}
+
+/* Stationary navbar text color */
+.navbar.stationary {
+    color: #ffffff;
+}
+
+.navbar.stationary .button {
+    color: #ffffff;
+}
+
+/* Floating navbar text color */
+.navbar.floating {
+    color: #102E4A;
+}
+
+.navbar.floating .button {
+    color: #102E4A;
+}
+/* styles.css or your CSS file */
+[data-color] {
+    transition: color 0.3s ease;
+}
+/* Assuming your buttons have classes .sign-in and .sign-up */
+.sign-in, .sign-up {
+    margin: 0 10px; /* Add spacing between buttons */
+    padding: 10px 20px; /* Make buttons slightly wider */
+    border-radius: 100px; /* Make buttons more rounded */
+    transition: all 0.3s ease; /* Add a transition effect for smoothness */
+}
+
+/* Optional: Add hover effect for better user experience */
+.sign-in:hover, .sign-up:hover {
+    background-color: #f0f0f0; /* Change background color on hover */
+    color: #102E4A; /* Change text color on hover */
+}
+@media (max-width: 768px) {
+    .navbar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        padding: 10px 0;
+        background-color: #333;
+    }
+
+    .navbar a {
+        padding: 10px;
+        text-align: center;
+        width: 100%;
+        color: white;
+        text-decoration: none;
+    }
+
+    .floating-navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .floating-navbar a {
+        padding: 10px;
+        text-align: center;
+        width: 100%;
+        color: white;
+        text-decoration: none;
+    }
+}
+@media (max-width: 768px) {
+    .navbar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        padding: 10px 20px;
+        background-color: #333;
+    }
+
+    .navbar .logo {
+        order: 1;
+        font-size: 1.5rem;
+    }
+
+    .navbar .menu-button {
+        order: 2;
+        display: block;
+        font-size: 1.5rem;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .navbar a {
+        display: none; /* Hide links on mobile */
+    }
+
+    .floating-navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: #333;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+    }
+
+    .floating-navbar .logo {
+        order: 1;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .floating-navbar .menu-button {
+        order: 2;
+        display: block;
+        font-size: 1.5rem;
+        color: white;
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .floating-navbar a {
+        display: none; /* Hide links on mobile */
+    }
+}
+@media (max-width: 768px) {
+    .floating-navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: #333; /* Ensure background color is set */
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        color: white; /* Ensure text color is set */
+    }
+
+    .floating-navbar .logo {
+        order: 1;
+        font-size: 1.5rem;
+        color: white; /* Ensure logo text color is set */
+    }
+
+    .floating-navbar .menu-button {
+        order: 2;
+        display: block;
+        font-size: 1.5rem;
+        color: white; /* Ensure button text color is set */
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .floating-navbar a {
+        display: none; /* Hide links on mobile */
+    }
+}
+@media (max-width: 768px) {
+    .floating-navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: #333; /* Ensure background color is set */
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        color: white; /* Ensure text color is set */
+    }
+
+    .floating-navbar .logo {
+        order: 1;
+        font-size: 1.5rem;
+        color: white; /* Ensure logo text color is set */
+    }
+
+    .floating-navbar .menu-button {
+        order: 2;
+        display: block;
+        font-size: 1.5rem;
+        color: white; /* Ensure button text color is set */
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .floating-navbar a {
+        display: none; /* Hide links on mobile */
+    }
+
+    .navbar .sidebar {
+        display: none; /* Hide sidebar when floating navbar is active */
+    }
+
+    .navbar .sidebar.open {
+        display: flex; /* Show sidebar when open */
+    }
+}
+@media (max-width: 768px) {
+    .navbar .sidebar,
+    .floating-navbar .sidebar {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffc75f;
+        color: white;
+        justify-content: center;
+        align-items: center;
+        z-index: 1002; /* Ensure it is above the navbar */
+        padding: 20px;
+        font-size: 2rem;
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(100%); /* Move sidebar fully off-screen */
+    }
+
+    .navbar .sidebar.open,
+    .floating-navbar .sidebar.open {
+        transform: translateX(0); /* Move sidebar into view */
+    }
+
+    .navbar .sidebar .close-button,
+    .floating-navbar .sidebar .close-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 2rem;
+        cursor: pointer;
+    }
+
+    .navbar .sidebar .auth-buttons,
+    .floating-navbar .sidebar .auth-buttons {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .navbar .sidebar .auth-buttons .sign-in,
+    .floating-navbar .sidebar .auth-buttons .sign-in,
+    .navbar .sidebar .auth-buttons .sign-up,
+    .floating-navbar .sidebar .auth-buttons .sign-up {
+        background-color: white;
+        color: #ffc75f;
+        border: 1px solid #ffc75f;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+        font-size: 1.5rem;
+    }
+
+    .navbar .sidebar .auth-buttons .sign-in:hover,
+    .floating-navbar .sidebar .auth-buttons .sign-in:hover,
+    .navbar .sidebar .auth-buttons .sign-up:hover,
+    .floating-navbar .sidebar .auth-buttons .sign-up:hover {
+        background-color: #ffc75f;
+        color: white;
+    }
+    .navbar-toggle {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        cursor: pointer;
+        color: #fff; /* Adjust color as needed */
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1003; /* Ensure it is above other elements */
+    }
+    /* Prevent body scrolling when sidebar is open */
+    body.sidebar-open {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .navbar .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #ffc75f;
+        color: white;
+        justify-content: center;
+        align-items: center;
+        z-index: 1002;
+        padding: 20px;
+        font-size: 2rem;
+        transition: all 0.3s ease-in-out;
+        transform: translateX(100%);
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .navbar .sidebar.open {
+        transform: translateX(0);
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
