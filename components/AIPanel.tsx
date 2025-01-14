@@ -21,6 +21,8 @@ const AIPanel: React.FC<AIPanelProps> = ({ isOpen, onClose }) => {
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
   useEffect(() => {
     if (!("webkitSpeechRecognition" in window)) {
       console.error("Web Speech API is not supported");
@@ -61,6 +63,24 @@ const AIPanel: React.FC<AIPanelProps> = ({ isOpen, onClose }) => {
     };
   }, [inputMessage]);
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setIsDarkMode(savedTheme === 'dark');
+    }
+
+    const handleThemeChange = () => {
+      const newTheme = localStorage.getItem('theme');
+      setIsDarkMode(newTheme === 'dark');
+    };
+
+    window.addEventListener('storage', handleThemeChange);
+
+    return () => {
+      window.removeEventListener('storage', handleThemeChange);
+    };
+  }, []);
+
   const addMessage = (newMessage: Message) => {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
   };
@@ -83,9 +103,9 @@ const AIPanel: React.FC<AIPanelProps> = ({ isOpen, onClose }) => {
     setInterimText("");
 
     const isCommandRequest = /^(add account|create account|create new account|add new account|add category|create category|add new category|create new category)/i.test(inputMessage);
-    const requestBody = isCommandRequest 
-      ? { text: inputMessage }
-      : { messages: [...messages, newMessage] };
+    const requestBody = isCommandRequest
+        ? { text: inputMessage }
+        : { messages: [...messages, newMessage] };
 
     const endpoint = isCommandRequest ? "/api/ai/parse" : "/api/ai";
 
@@ -103,9 +123,9 @@ const AIPanel: React.FC<AIPanelProps> = ({ isOpen, onClose }) => {
         console.log("Server Response:", data); // Debugging line
         const assistantMessage: Message = {
           role: "assistant",
-          content: isCommandRequest 
-            ? `Processed Command: ${JSON.stringify(data)}` // Adjust based on actual response
-            : data.text,
+          content: isCommandRequest
+              ? `Processed Command: ${JSON.stringify(data)}` // Adjust based on actual response
+              : data.text,
           id: `${Date.now() + 1}`,
         };
 
@@ -148,31 +168,32 @@ const AIPanel: React.FC<AIPanelProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-0 right-0 m-4 w-80 bg-white shadow-lg rounded-lg p-4">
-      <div className="flex justify-between items-start">
-        <div className="text-left font-bold text-lg">Vorifi AI Chatbot</div>
-        <button onClick={onClose} className="text-red-500">
-          X
+      <div className={`fixed bottom-0 right-0 m-4 w-80 shadow-lg rounded-lg p-4 ${isDarkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+        <div className="flex justify-between items-start">
+          <div className="text-left font-bold text-lg">Vorifi AI Chatbot</div>
+          <button onClick={onClose} className="text-red-500">
+            X
+          </button>
+        </div>
+        <div className="overflow-y-auto h-64 mt-2">
+          <Messages messages={messages} isLoading={isLoading} />
+        </div>
+        <InputForm
+            input={inputMessage + interimText}  // Display final and interim text together
+            handleInputChange={handleInputChange}
+            handleSubmit={handleSubmit}
+            isLoading={isLoading}
+            stop={stop}
+            addMessage={addMessage}
+            isDarkMode={isDarkMode}  // Pass the dark mode state to InputForm
+        />
+        <button
+            onClick={isListening ? stopListening : startListening}
+            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded flex items-center justify-center"
+        >
+          <FontAwesomeIcon icon={isListening ? faMicrophoneSlash : faMicrophone} className="mr-2" />
         </button>
       </div>
-      <div className="overflow-y-auto h-64 mt-2">
-        <Messages messages={messages} isLoading={isLoading} />
-      </div>
-      <InputForm
-        input={inputMessage + interimText}  // Display final and interim text together
-        handleInputChange={handleInputChange}
-        handleSubmit={handleSubmit}
-        isLoading={isLoading}
-        stop={stop}
-        addMessage={addMessage}
-      />
-      <button
-        onClick={isListening ? stopListening : startListening}
-        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded flex items-center justify-center"
-      >
-        <FontAwesomeIcon icon={isListening ? faMicrophoneSlash : faMicrophone} className="mr-2" />
-      </button>
-    </div>
   );
 };
 

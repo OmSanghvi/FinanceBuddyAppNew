@@ -1,95 +1,175 @@
-"use client";
-
-import { usePathname, useRouter } from "next/navigation"; 
-import { NavButton } from "@/components/nav-button";
-import {Sheet, SheetContent, SheetTrigger,} from "./ui/sheet";
-import {useMedia} from "react-use";
-import { useState } from "react";
-import { Button } from "./ui/button";
-import { Menu } from "lucide-react";
-import Image from 'next/image';
+import React, { useContext, createContext, ReactNode, useEffect } from "react";
+import { ClerkLoaded, ClerkLoading, UserButton, useUser } from "@clerk/nextjs";
+import Image from "next/image";
+import Link from "next/link";
+import { ChevronLast, ChevronFirst, MoreVertical, Loader2, Sun, Moon } from "lucide-react";
+import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useMedia } from "react-use";
+import { Button } from '@/components/ui/button';
 
 const routes = [
-    {
-        href: "/",
-        label: "Overview",
-    },
-    {
-        href: "/transactions",
-        label: "Transactions",
-    },
-
-    {
-        href: "/accounts",
-        label: "Accounts",
-    },
-
-    {
-        href: "/categories",
-        label: "Categories",
-    },
-
-    {
-        href: "/settings",
-        label: "Settings",
-    },
+    { href: "/", label: "Overview" },
+    { href: "/transactions", label: "Transactions" },
+    { href: "/accounts", label: "Accounts" },
+    { href: "/categories", label: "Categories" },
+    { href: "/settings", label: "Settings" }
 ];
-export const Navigation = () => {
-    const [isOpen, setIsOpen] = useState(false);
+
+const userButtonAppearance = {
+    elements: {
+        userButtonAvatarBox: "w-10 h-10", // Custom width and height
+        userButtonPopoverCard: "bg-blue-100", // Custom background for the popover card
+        userButtonPopoverActionButton: "text-red-600", // Custom text color for action buttons
+    },
+};
+
+const SidebarContext = createContext<{ expanded: boolean }>({ expanded: true });
+
+interface SidebarProps {
+    children: ReactNode;
+    expanded: boolean;
+    setExpanded: (expanded: boolean) => void;
+}
+
+interface SidebarItemProps {
+    icon: ReactNode;
+    text: string;
+    active: boolean;
+    alert: boolean;
+    iconSize?: number;
+}
+
+export function SidebarItem({ icon, text, active, alert, iconSize = 24 }: SidebarItemProps) {
+    const { expanded } = useContext(SidebarContext);
+    //const accountId = params.get("accountId") || "default";
+    return (
+        <li
+            className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
+                active ? "bg-blue-500 text-white dark:bg-blue-700 dark:text-white" : "hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-300"
+            }`}
+        >
+            <div
+                className={`flex items-center justify-center transition-all ${expanded ? "" : "w-full justify-center mx-auto"}`}
+                style={{ width: iconSize, height: iconSize }}>
+                {React.cloneElement(icon as React.ReactElement, { size: iconSize })}
+            </div>
+            <span className={`overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}`}>
+                {text}
+            </span>
+            {alert && (
+                <div className={`absolute right-2 w-2 h-2 rounded bg-indigo-400 ${expanded ? "" : "top-2"}`} />
+            )}
+            {!expanded && (
+                <div className={`absolute left-full rounded-md px-2 py-1 ml-6 bg-gray-200 dark:bg-gray-600 text-black dark:text-white text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0`}>
+                    {text}
+                </div>
+            )}
+        </li>
+    );
+}
+
+export default function Sidebar({ children, expanded, setExpanded }: SidebarProps) {
+    const { user } = useUser();
     const router = useRouter();
     const pathname = usePathname();
     const isMobile = useMedia("(max-width: 1024px)", false);
-    const onClick = (href: string) =>{
-        router.push(href);
-        setIsOpen(false);
-    };
-    if(isMobile){
-        return (
-            <div className="relative mr-17 flex items-center justify-between px-4 py-2 bg-transparent">
-                {/* Menu Icon */}
-                <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                    <SheetTrigger>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="mr-24 font-normal bg-white/10 hover:bg-white/20 hover:text-white border-none focus-visible:ring-offset-0 focus-visible:ring-transparent outline-none text-white focus:bg-white/30 transition"
-                        >
-                            <Menu className="size-4"/>
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="px-2">
-                        <nav className="flex flex-col gap-y-2 pt-6">
-                            {routes.map((route) => (
-                                <Button
-                                    key={route.href}
-                                    variant={route.href === pathname ? "secondary" : "ghost"}
-                                    onClick={() => onClick(route.href)}
-                                    className="w-full justify-start"
-                                >
-                                    {route.label}
-                                </Button>
-                            ))}
-                        </nav>
-                    </SheetContent>
-                </Sheet>
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
-                {/* Center Content */}
-                <div className="mr-20 flex items-center ml-6">
-                    <Image src = "/logo.svg" alt = "Logo" height={28} width={28}/>
-                    <span className="text-lg font-medium text-white">Vorifi</span>
+    useEffect(() => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setIsDarkMode(savedTheme === 'dark');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+    }, []);
+
+    const onClick = (href: string) => {
+        router.push(href);
+        if (isMobile) {
+            setExpanded(false);
+        }
+    };
+
+    const toggleDarkMode = () => {
+        const newMode = !isDarkMode;
+        setIsDarkMode(newMode);
+        if (newMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+        }
+    };
+
+    return (
+        <aside className={`h-screen fixed left-0 top-0 transition-all ${expanded ? 'w-64' : 'w-22'} ${expanded ? 'z-50' : 'z-10'} dark:bg-gray-800`}>
+            <nav className={`h-full flex flex-col bg-white dark:bg-gray-800 border-r shadow-sm ${expanded || !isMobile ? 'block' : 'hidden'}`}>
+                <div className="p-4 pb-2 flex justify-between items-center">
+                    <Link href="/">
+                        <div className='items-start justify-start hidden lg:flex'>
+                            <Image src={isDarkMode ? "/logo.svg" : "/darklogo.svg"} alt="Logo" height={30} width={28} />
+                            {expanded && (
+                                <p className='font-semibold text-Black dark:text-white text-3xl ml-2.5'>
+                                    Vorifi
+                                </p>
+                            )}
+                        </div>
+                    </Link>
+                    {!isMobile && (
+                        <button
+                            onClick={() => setExpanded(!expanded)}
+                            className="p-1.5 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+                        >
+                            {expanded ? <ChevronFirst /> : <ChevronLast />}
+                        </button>
+                    )}
+                    {isMobile && (
+                        <button
+                            onClick={() => setExpanded(!expanded)}
+                            className="p-1.5 rounded-lg bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
+                        >
+                            Close
+                        </button>
+                    )}
                 </div>
-            </div>
-        )
-    }
-                return (
-                <nav className="hidden lg:flex items-center gap-x-2 overflow-x-auto">
-                    {routes.map((route) => (
-                        <NavButton
-                            key={route.href}
-                            href={route.href}
-                            label={route.label}
-                            isActive={pathname === route.href}/>
-                    ))}
-                </nav>
-                );
-                }
+
+                <SidebarContext.Provider value={{ expanded }}>
+                    <ul className="flex-1 px-3">{children}</ul>
+                </SidebarContext.Provider>
+
+                <div className={`p-4 flex justify-center items-center ${expanded ? 'w-full' : 'w-20'}`}>
+                    <Button onClick={toggleDarkMode} className="w-full flex justify-center">
+                        {isDarkMode ? <Sun className="text-white dark:text-black" /> : <Moon className="text-white dark:text-black" />}
+                    </Button>
+                </div>
+
+                {!isMobile && (
+                    <div className="border-t flex p-3 dark:border-gray-700">
+                        <div className={`flex justify-center items-center transition-all ${expanded ? "w-52 ml-3" : "w-16 justify-center"}`}>
+                            <div className="leading-4 flex items-center justify-center w-full">
+                                <ClerkLoaded>
+                                    <UserButton appearance={userButtonAppearance} afterSignOutUrl="/home" />
+                                    {expanded && user && (
+                                        <span className="ml-2 transition-opacity duration-300 opacity-100 dark:text-white">
+                                            {user.fullName}
+                                        </span>
+                                    )}
+                                </ClerkLoaded>
+                                <ClerkLoading>
+                                    <Loader2 className="size-8 animate-spin text-slate-400" />
+                                </ClerkLoading>
+                            </div>
+                            {expanded && <MoreVertical size={20} className="dark:text-white" />}
+                        </div>
+                    </div>
+                )}
+            </nav>
+        </aside>
+    );
+}

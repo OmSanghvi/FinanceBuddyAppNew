@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { Responsive, WidthProvider } from "react-grid-layout";
 import { Button } from "@/components/ui/button";
-import { Save } from "lucide-react";
+import { Save, Edit3 } from "lucide-react";
 import { Chart } from "@/components/chart";
 import { SpendingPie } from "@/components/spending-pie";
 import { IncomeCard } from "./IncomeCard";
@@ -49,6 +49,8 @@ export default function DashboardClient() {
         ]
     });
 
+    const [isEditMode, setIsEditMode] = useState(false);
+
     useEffect(() => {
         const savedLayouts = localStorage.getItem(`dashboardLayouts_${accountId}`);
         if (savedLayouts) {
@@ -58,34 +60,16 @@ export default function DashboardClient() {
 
     const handleLayoutChange = (currentLayout: any, allLayouts: any) => {
         setLayouts(allLayouts);
-        localStorage.setItem(`dashboardLayouts_${accountId}`, JSON.stringify(allLayouts));
+        if (!isEditMode) {
+            localStorage.setItem(`dashboardLayouts_${accountId}`, JSON.stringify(allLayouts));
+        }
     };
 
-    const resetLayout = () => {
-        localStorage.removeItem(`dashboardLayouts_${accountId}`);
-        setLayouts({
-            lg: [
-                { i: "income", x: 0, y: 0, w: 4, h: 2 },
-                { i: "expenses", x: 4, y: 0, w: 4, h: 2 },
-                { i: "remaining", x: 8, y: 0, w: 4, h: 2 },
-                { i: "chart1", x: 0, y: 2, w: 6, h: 4 },
-                { i: "chart2", x: 6, y: 2, w: 6, h: 4 }
-            ],
-            md: [
-                { i: "income", x: 0, y: 0, w: 3, h: 2 },
-                { i: "expenses", x: 3, y: 0, w: 4, h: 2 },
-                { i: "remaining", x: 7, y: 0, w: 3, h: 2 },
-                { i: "chart1", x: 0, y: 2, w: 5, h: 4 },
-                { i: "chart2", x: 5, y: 2, w: 5, h: 4 }
-            ],
-            sm: [
-                { i: "income", x: 0, y: 0, w: 6, h: 2 },
-                { i: "expenses", x: 0, y: 2, w: 6, h: 2 },
-                { i: "remaining", x: 0, y: 4, w: 6, h: 2 },
-                { i: "chart1", x: 0, y: 6, w: 6, h: 4 },
-                { i: "chart2", x: 0, y: 10, w: 6, h: 4 }
-            ]
-        });
+    const toggleEditMode = () => {
+        setIsEditMode(!isEditMode);
+        if (isEditMode) {
+            localStorage.setItem(`dashboardLayouts_${accountId}`, JSON.stringify(layouts));
+        }
     };
 
     if (typeof window === "undefined") {
@@ -99,18 +83,13 @@ export default function DashboardClient() {
     return (
         <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24 mb-0">
             <div className="flex justify-between items-center mb-4 px-4">
-                <div className="space-x-2">
-                    <Button
-                        variant="outline"
-                        onClick={resetLayout}
-                    >
-                        Reset Layout
-                    </Button>
-                    <Button>
-                        <Save className="mr-2 h-4 w-4" />
-                        Save Layout
-                    </Button>
-                </div>
+                <Button
+                    onClick={toggleEditMode}
+                    className="bg-white text-black dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700"
+                >
+                    {isEditMode ? <Save className="mr-2 h-4 w-4" /> : <Edit3 className="mr-2 h-4 w-4" />}
+                    {isEditMode ? "Save Layout" : "Edit Layout"}
+                </Button>
             </div>
 
             <ResponsiveGridLayout
@@ -120,7 +99,7 @@ export default function DashboardClient() {
                 cols={{ lg: 12, md: 10, sm: 6 }}
                 rowHeight={100}
                 onLayoutChange={handleLayoutChange}
-                isDraggable
+                isDraggable={isEditMode}
                 isResizable={false}
                 containerPadding={[16, 16]}
                 margin={[16, 16]}
