@@ -61,14 +61,14 @@ export const Header = () => {
             <div className="max-w-screen-2xl mx-auto">
                 <div className="w-full flex items-center justify-between mb-14">
                     {isMobile && (
-                        <Button onClick={toggleSidebar} className={`lg:hidden ${isDarkMode ? "bg-black" : "bg-white"}`}>
-                            <Menu className={isDarkMode ? "text-white" : "text-black"} />
+                        <Button onClick={toggleSidebar} className={`lg:hidden bg-transparent`}>
+                            <Menu className="text-white"/>
                         </Button>
                     )}
                     {isMobile && (
                         <div className="flex items-center justify-center w-full">
-                            <Image src={isDarkMode ? "/logo.svg" : "/darklogo.svg"} alt="Logo" height={30} width={28} />
-                            <p className='font-semibold text-Black dark:text-white text-3xl ml-2.5'>
+                            <Image src="/logo.svg" alt="Logo" height={30} width={28} />
+                            <p className='font-semibold text-white text-3xl ml-2.5'>
                                 Vorifi
                             </p>
                         </div>

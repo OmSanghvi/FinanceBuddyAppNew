@@ -42,7 +42,6 @@ interface SidebarItemProps {
 
 export function SidebarItem({ icon, text, active, alert, iconSize = 24 }: SidebarItemProps) {
     const { expanded } = useContext(SidebarContext);
-    //const accountId = params.get("accountId") || "default";
     return (
         <li
             className={`relative flex items-center py-2 px-3 my-1 font-medium rounded-md cursor-pointer transition-colors group ${
@@ -142,10 +141,17 @@ export default function Sidebar({ children, expanded, setExpanded }: SidebarProp
                 <SidebarContext.Provider value={{ expanded }}>
                     <ul className="flex-1 px-3">{children}</ul>
                 </SidebarContext.Provider>
-
-                <div className={`p-4 flex justify-center items-center ${expanded ? 'w-full' : 'w-20'}`}>
-                    <Button onClick={toggleDarkMode} className="w-full flex justify-center">
-                        {isDarkMode ? <Sun className="text-white dark:text-black" /> : <Moon className="text-white dark:text-black" />}
+                <div className="sticky bottom-0 w-full p-4 border-t dark:border-gray-700 bg-white dark:bg-gray-800">
+                    <Button
+                        key={isDarkMode ? "dark-mode" : "light-mode"} // Ensure re-render on state change
+                        onClick={toggleDarkMode}
+                        className={`w-full flex justify-center items-center py-2
+        ${isDarkMode ? 'bg-white text-black' : 'bg-black text-white'}
+        ${isMobile ? 'mobile-theme-button' : 'hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors'}
+    `}
+                        variant="outline"
+                    >
+                        {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                     </Button>
                 </div>
 

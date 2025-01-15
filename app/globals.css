@@ -99,4 +99,30 @@
   .dark .bordered-component {
     @apply border border-border rounded-lg shadow-lg bg-card p-4;
   }
+  /* styles.css */
+  .mobile-theme-button:hover,
+  .mobile-theme-button:active,
+  .mobile-theme-button:focus {
+    background-color: inherit;
+    transition: none;
+  }
+
+}
+.no-hover:hover {
+  background-color: inherit;
+}
+
+.no-click:active {
+  background-color: inherit;
+}
+.mobile-theme-button:hover {
+  background-color: inherit;
+  transition: none;
+}
+/* styles.css */
+.mobile-theme-button:hover,
+.mobile-theme-button:active,
+.mobile-theme-button:focus {
+  background-color: inherit;
+  transition: none;
 }
