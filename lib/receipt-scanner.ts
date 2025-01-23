@@ -5,8 +5,8 @@ import DocumentIntelligence, {
 } from "@azure-rest/ai-document-intelligence";
 
 export async function scanReceipt(file: File) {
-    const endpoint = process.env.DOCUMENT_INTELLIGENCE_ENDPOINT;
-    const apiKey = process.env.DOCUMENT_INTELLIGENCE_API_KEY;
+    const endpoint = "https://reciept.cognitiveservices.azure.com/";
+    const apiKey = "3KI4Blz06L9gKQZNqxgyazrNGHiJl1QsBCveVISPZWmtuM0jI8puJQQJ99BAACrJL3JXJ3w3AAALACOGdzVU";
 
     if (!endpoint || !apiKey) {
         throw new Error("Environment variables for endpoint and API key must be set.");
