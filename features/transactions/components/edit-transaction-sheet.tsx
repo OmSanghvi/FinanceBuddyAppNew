@@ -78,7 +78,7 @@ export const EditTransactionSheet = ()=>{
                     </div>
                 ):
                 (
-                    <TransactionForm id = {id} defaultValues = {defaultValues} onSubmit={onSubmit} onDelete = {onDelete} disabled = {isPending} categoryOptions = {categoryOptions} onCreateCategory = {onCreateCategory} accountOptions = {accountOptions} onCreateAccount = {onCreateAccount}/>
+                    <TransactionForm id = {id} defaultValues = {defaultValues} onSubmit={onSubmit} onDelete = {onDelete} disabled = {isPending} categoryOptions = {categoryOptions} onCreateCategory = {onCreateCategory} accountOptions = {accountOptions} onCreateAccount = {onCreateAccount} onImageUpload={() => {}}/>
                 )
             }
             </SheetContent>

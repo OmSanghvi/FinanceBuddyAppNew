@@ -1,4 +1,6 @@
-import {Sheet,SheetContent,SheetDescription,SheetHeader,SheetTitle} from "@/components/ui/sheet";
+
+import { useEffect } from "react";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { useNewTransaction } from "@/features/transactions/hooks/use-new-transaction";
 import { TransactionForm } from "./transaction-form";
 import { insertTransactionSchema } from "@/db/schema";
@@ -11,30 +13,37 @@ import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
 import { Loader2 } from "lucide-react";
 
 const formSchema = insertTransactionSchema.omit({
-    id:true,
+    id: true,
 });
 
 type FormValues = z.input<typeof formSchema>;
 
-export const NewTransactionSheet = ()=>{
-    const{isOpen, onClose} = useNewTransaction();
+export const NewTransactionSheet = () => {
+    const { isOpen, onClose, transactionData, setTransactionData } = useNewTransaction();
     const createMutation = useCreateTransaction();
     const categoryMutation = useCreateCategory();
     const categoryQuery = useGetCategories();
-    const onCreateCategory = (name:string)=> categoryMutation.mutate({name})
-    const categoryOptions = (categoryQuery.data ?? []).map((category)=>({label: category.name, value:category.id}))
+    const onCreateCategory = (name: string) => categoryMutation.mutate({ name });
+    const categoryOptions = (categoryQuery.data ?? []).map((category) => ({ label: category.name, value: category.id }));
 
     const accountMutation = useCreateAccount();
     const accountQuery = useGetAccounts();
-    const onCreateAccount = (name:string)=> accountMutation.mutate({name})
-    const accountOptions = (accountQuery.data ?? []).map((account)=>({label: account.name, value:account.id}))
-    const isPending = createMutation.isPending ||categoryMutation.isPending||accountMutation.isPending
-    const isLoading = categoryQuery.isLoading || accountQuery.isLoading
-    
+    const onCreateAccount = (name: string) => accountMutation.mutate({ name });
+    const accountOptions = (accountQuery.data ?? []).map((account) => ({ label: account.name, value: account.id }));
+    const isPending = createMutation.isPending || categoryMutation.isPending || accountMutation.isPending;
+    const isLoading = categoryQuery.isLoading || accountQuery.isLoading;
+
     const onSubmit = (values: FormValues) => {
-        createMutation.mutate(values, {onSuccess: ()=> {onClose();}});
-    }
-    return(
+        createMutation.mutate(values, { onSuccess: () => { onClose(); setTransactionData(null); } });
+    };
+
+    useEffect(() => {
+        if (transactionData) {
+            console.log(transactionData);
+        }
+    }, [transactionData]);
+
+    return (
         <Sheet open={isOpen} onOpenChange={onClose}>
             <SheetContent className="space-y-4">
                 <SheetHeader>
@@ -45,15 +54,23 @@ export const NewTransactionSheet = ()=>{
                         Add a new transaction
                     </SheetDescription>
                 </SheetHeader>
-                {isLoading
-                ?(
-                <div className="absolute inset-0 flex items-center justify-center"><Loader2 className="size-4 text-muted-foreground animate-spin"/></div>
-            ):
-            (
-                <TransactionForm onSubmit={onSubmit} disabled = {isPending} categoryOptions = {categoryOptions} onCreateCategory = {onCreateCategory} accountOptions = {accountOptions} onCreateAccount = {onCreateAccount}/>
-            )
-                }
+                {isLoading ? (
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <Loader2 className="size-4 text-muted-foreground animate-spin" />
+                    </div>
+                ) : (
+                    <TransactionForm
+                        defaultValues={transactionData}
+                        onSubmit={onSubmit}
+                        disabled={isPending}
+                        categoryOptions={categoryOptions}
+                        onCreateCategory={onCreateCategory}
+                        accountOptions={accountOptions}
+                        onCreateAccount={onCreateAccount}
+                        onImageUpload={() => {}}
+                    />
+                )}
             </SheetContent>
         </Sheet>
-    )
-}
+    );
+};

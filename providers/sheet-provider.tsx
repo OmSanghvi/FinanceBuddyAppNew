@@ -9,16 +9,14 @@ import { EditTransactionSheet } from "@/features/transactions/components/edit-tr
 export const SheetProvider = ()=>{
     const isMounted = useMountedState();
     if(!isMounted) return null;
-    return(
+    return (
         <>
-        <NewAccountSheet/>
-        <EditAccountSheet/>
-
-        <NewCategorySheet/>
-        <EditCategorySheet/>
-
-        <NewTransactionSheet/>
-        <EditTransactionSheet/>
+            <NewAccountSheet />
+            <EditAccountSheet />
+            <NewCategorySheet />
+            <EditCategorySheet />
+            <NewTransactionSheet />
+            <EditTransactionSheet />
         </>
-    )
+    );
 }
