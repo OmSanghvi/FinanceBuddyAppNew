@@ -18,10 +18,11 @@ import Chat from "@/components/chat";
 import { insertTransactionSchema } from "@/db/schema";
 import { z } from "zod";
 import { useCreateTransaction } from "@/features/transactions/api/use-create-transaction";
-import {useGetAccounts} from "@/features/accounts/api/use-get-accounts";
-import {useGetCategories} from "@/features/categories/api/use-get-categories";
-import {TransactionForm} from "@/features/transactions/components/transaction-form";
+import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
+import { useGetCategories } from "@/features/categories/api/use-get-categories";
+import { TransactionForm } from "@/features/transactions/components/transaction-form";
 import { useNewTransaction } from "@/features/transactions/hooks/use-new-transaction";
+import LoadingPage from "@/components/LoadingPage";
 
 enum VARIANTS {
     LIST = "LIST",
@@ -35,10 +36,22 @@ const INITIAL_IMPORT_RESULTS = {
 }
 
 const TransactionsPage = () => {
+    const [isLoading, setIsLoading] = useState(true);
     const [AccountDialog, confirm] = useSelectAccount();
     const [variant, setVariant] = useState<VARIANTS>(VARIANTS.LIST);
     const [importResults, setImportResults] = useState(INITIAL_IMPORT_RESULTS);
     const [transactionData, setTransactionData] = useState(null);
+
+    const newTransaction = useNewTransaction();
+    const createTransactions = useBulkCreateTransactions();
+    const transactionsQuery = useGetTransactions();
+    const deleteTransactions = useBulkDeleteTransactions();
+    const accountQuery = useGetAccounts();
+    const categoryQuery = useGetCategories();
+    const createMutation = useCreateTransaction();
+
+    const transactions = transactionsQuery.data || [];
+    const isDisabled = transactionsQuery.isLoading || deleteTransactions.isPending;
 
     const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
         setImportResults(results);
@@ -49,14 +62,6 @@ const TransactionsPage = () => {
         setImportResults(INITIAL_IMPORT_RESULTS);
         setVariant(VARIANTS.LIST);
     };
-
-    const newTransaction = useNewTransaction();
-    const createTransactions = useBulkCreateTransactions();
-    const transactionsQuery = useGetTransactions();
-    const deleteTransactions = useBulkDeleteTransactions();
-    const transactions = transactionsQuery.data || [];
-
-    const isDisabled = transactionsQuery.isLoading || deleteTransactions.isPending;
 
     const onSubmitImport = async (values: typeof transactionsSchema.$inferInsert[]) => {
         const accountId = await confirm();
@@ -88,39 +93,26 @@ const TransactionsPage = () => {
         }
     }, [transactionData]);
 
-    const accountQuery = useGetAccounts();
-    const categoryQuery = useGetCategories();
+    useEffect(() => {
+        if (!transactionsQuery.isLoading && !accountQuery.isLoading && !categoryQuery.isLoading) {
+            setIsLoading(false);
+        }
+    }, [transactionsQuery.isLoading, accountQuery.isLoading, categoryQuery.isLoading]);
+
+    if (isLoading) {
+        return <LoadingPage />;
+    }
+
     const accountOptions = (accountQuery.data ?? []).map((account: { name: string; id: string }) => ({ label: account.name, value: account.id }));
     const categoryOptions = (categoryQuery.data ?? []).map((category: { name: string; id: string }) => ({ label: category.name, value: category.id }));
     const formSchema = insertTransactionSchema.omit({
-        id:true,
+        id: true,
     });
 
     type FormValues = z.input<typeof formSchema>;
 
-    const{isOpen, onClose} = useNewTransaction();
-    const createMutation = useCreateTransaction();
-
-
     const onSubmit = (values: FormValues) => {
-        createMutation.mutate(values, {onSuccess: ()=> {onClose();}});
-    }
-
-    if (transactionsQuery.isLoading) {
-        return (
-            <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
-                <Card className="border-none drop-shadow-sm">
-                    <CardHeader>
-                        <Skeleton className="h-8 w-48" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="h-[500px] w-full flex items-center">
-                            <Loader2 className="size-6 text-slate-300 animate-spin" />
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-        );
+        createMutation.mutate(values, { onSuccess: () => { newTransaction.onClose(); } });
     }
 
     if (variant === VARIANTS.IMPORT) {
@@ -131,7 +123,6 @@ const TransactionsPage = () => {
             </>
         );
     }
-
 
     return (
         <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
