@@ -33,7 +33,7 @@
 
   .dark {
     --background: 222.2 84% 4.9%; /* Black background */
-    --foreground: 210 40% 98%;
+    --foreground: 210 20% 50%;
     --card: 217.2 32.6% 17.5%; /* Gray color for components */
     --card-foreground: 210 40% 98%;
     --popover: 217.2 32.6% 17.5%; /* Gray color for components */
