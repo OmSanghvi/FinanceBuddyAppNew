@@ -4,6 +4,16 @@ import DocumentIntelligence, {
     isUnexpected,
 } from "@azure-rest/ai-document-intelligence";
 
+/**
+ * Scans a receipt file and extracts relevant information.
+ *
+ * This function uses the Azure Document Intelligence service to analyze a receipt file.
+ * It extracts the transaction date, merchant name, and total amount from the receipt.
+ *
+ * @param {File} file - The receipt file to be scanned.
+ * @returns {Promise<object>} An object containing the extracted receipt information.
+ * @throws {Error} If the environment variables for endpoint and API key are not set, or if the analysis fails.
+ */
 export async function scanReceipt(file: File) {
     const endpoint = "https://reciept.cognitiveservices.azure.com/";
     const apiKey = "3KI4Blz06L9gKQZNqxgyazrNGHiJl1QsBCveVISPZWmtuM0jI8puJQQJ99BAACrJL3JXJ3w3AAALACOGdzVU";
@@ -39,12 +49,21 @@ export async function scanReceipt(file: File) {
         return {
             date: new Date(document.fields?.["TransactionDate"]?.valueDate || ""),
             payee: document.fields?.["MerchantName"]?.valueString || "",
-            amount: amountString,};
+            amount: amountString,
+        };
     } else {
         throw new Error("Expected at least one receipt in the result.");
     }
 }
 
+/**
+ * Reads a file as an ArrayBuffer.
+ *
+ * This function uses the FileReader API to read the contents of a file as an ArrayBuffer.
+ *
+ * @param {File} file - The file to be read.
+ * @returns {Promise<ArrayBuffer>} A promise that resolves to the file's contents as an ArrayBuffer.
+ */
 function readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
