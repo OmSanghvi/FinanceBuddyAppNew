@@ -33,7 +33,15 @@ const configuration = new Configuration({
 
 const client = new PlaidApi(configuration);
 
+/**
+ * Hono app instance for handling Plaid-related API routes.
+ */
 const app = new Hono()
+
+    /**
+     * GET /connected-bank - Fetches the connected bank for the authenticated user.
+     * Requires user to be authenticated.
+     */
     .get(
         "/connected-bank",
         clerkMiddleware(),
@@ -57,6 +65,11 @@ const app = new Hono()
             return c.json({ data: connectedBank || null });
         },
     )
+
+    /**
+     * DELETE /connected-bank - Deletes the connected bank for the authenticated user.
+     * Requires user to be authenticated.
+     */
     .delete(
         "/connected-bank",
         clerkMiddleware(),
@@ -104,6 +117,11 @@ const app = new Hono()
             return c.json({ data: connectedBank });
         },
     )
+
+    /**
+     * POST /create-link-token - Creates a link token for the authenticated user.
+     * Requires user to be authenticated.
+     */
     .post("/create-link-token",
         clerkMiddleware(),
         async (c) => {
@@ -126,6 +144,13 @@ const app = new Hono()
             return c.json({ data: token.data.link_token }, 200);
         },
     )
+
+    /**
+     * POST /exchange-public-token - Exchanges a public token for an access token.
+     * Requires user to be authenticated.
+     * @param {object} body - The request body containing the public token.
+     * @param {string} body.publicToken - The public token to exchange.
+     */
     .post("/exchange-public-token",
         clerkMiddleware(),
         zValidator(
@@ -147,79 +172,79 @@ const app = new Hono()
             })
 
             const [connectedBank] = await db
-            .insert(connectedBanks)
-            .values({
-                id: createId(),
-                userId: auth.userId,
-                accessToken: exchange.data.access_token,
-            })
-            .returning();
-
-        const plaidTransactions = await client.transactionsSync({
-            access_token: connectedBank.accessToken,
-        });
-
-        const plaidAccounts = await client.accountsGet({
-            access_token: connectedBank.accessToken,
-        });
-
-        const plaidCategories = await client.categoriesGet({});
-
-        const newAccounts = await db
-            .insert(accounts)
-            .values(
-                plaidAccounts.data.accounts.map((account) => ({
+                .insert(connectedBanks)
+                .values({
                     id: createId(),
-                    name: account.name,
-                    plaidId: account.account_id,
                     userId: auth.userId,
-                })),
-            )
-            .returning();
+                    accessToken: exchange.data.access_token,
+                })
+                .returning();
 
-        const newCategories = await db
-            .insert(categories)
-            .values(
-                plaidCategories.data.categories.map((category) => ({
-                    id: createId(),
-                    name: category.hierarchy.join(", "),
-                    plaidId: category.category_id,
-                    userId: auth.userId,
-                })),
-            )
-            .returning();
+            const plaidTransactions = await client.transactionsSync({
+                access_token: connectedBank.accessToken,
+            });
 
-        const newTransactionsValues = plaidTransactions.data.added
-            .reduce((acc, transaction) => {
-                const account = newAccounts
-                    .find((account) => account.plaidId === transaction.account_id);
-                const category = newCategories
-                    .find((category) => category.plaidId === transaction.category_id);
-                const amountInMiliunits = convertAmountToMiliunits(transaction.amount,);
+            const plaidAccounts = await client.accountsGet({
+                access_token: connectedBank.accessToken,
+            });
 
-                if (account) {
-                    acc.push({
+            const plaidCategories = await client.categoriesGet({});
+
+            const newAccounts = await db
+                .insert(accounts)
+                .values(
+                    plaidAccounts.data.accounts.map((account) => ({
                         id: createId(),
-                        amount: amountInMiliunits,
-                        payee: transaction.merchant_name || transaction.name,
-                        notes: transaction.name,
-                        date: new Date(transaction.date),
-                        accountId: account.id,
-                        categoryId: category?.id,
-                    });
-                }
+                        name: account.name,
+                        plaidId: account.account_id,
+                        userId: auth.userId,
+                    })),
+                )
+                .returning();
 
-                return acc;
-            }, [] as typeof transactions.$inferInsert[]);
+            const newCategories = await db
+                .insert(categories)
+                .values(
+                    plaidCategories.data.categories.map((category) => ({
+                        id: createId(),
+                        name: category.hierarchy.join(", "),
+                        plaidId: category.category_id,
+                        userId: auth.userId,
+                    })),
+                )
+                .returning();
 
-        if (newTransactionsValues.length > 0) {
-            await db
-                .insert(transactions)
-                .values(newTransactionsValues);
-        }
+            const newTransactionsValues = plaidTransactions.data.added
+                .reduce((acc, transaction) => {
+                    const account = newAccounts
+                        .find((account) => account.plaidId === transaction.account_id);
+                    const category = newCategories
+                        .find((category) => category.plaidId === transaction.category_id);
+                    const amountInMiliunits = convertAmountToMiliunits(transaction.amount,);
 
-        return c.json({ ok: true }, 200);
-    },
-)
+                    if (account) {
+                        acc.push({
+                            id: createId(),
+                            amount: amountInMiliunits,
+                            payee: transaction.merchant_name || transaction.name,
+                            notes: transaction.name,
+                            date: new Date(transaction.date),
+                            accountId: account.id,
+                            categoryId: category?.id,
+                        });
+                    }
+
+                    return acc;
+                }, [] as typeof transactions.$inferInsert[]);
+
+            if (newTransactionsValues.length > 0) {
+                await db
+                    .insert(transactions)
+                    .values(newTransactionsValues);
+            }
+
+            return c.json({ ok: true }, 200);
+        },
+    )
 
 export default app;

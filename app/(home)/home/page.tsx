@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/home/Navbar";
 import Hero from "@/components/home/Hero";
+import Contact from "@/components/home/Contact"
 
 
 export default function Home() {
@@ -19,6 +20,8 @@ export default function Home() {
         <div className="min-h-screen flex flex-col items-center">
             <Navbar />
             <Hero />
+            <Contact />
+
         </div>
     );
 }

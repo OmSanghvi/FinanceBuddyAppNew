@@ -2,6 +2,7 @@
 import './Navbar.css';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Navbar() {
     const router = useRouter();
@@ -19,7 +20,7 @@ export default function Navbar() {
 
     useEffect(() => {
         const checkMobile = () => {
-            setIsMobile(window.innerWidth <= 1024);
+            setIsMobile(window.innerWidth <= 768);
         };
 
         checkMobile();
@@ -38,7 +39,7 @@ export default function Navbar() {
     }, []);
 
     const toggleSidebar = () => {
-        setSidebarOpen(prev => !prev);
+        setSidebarOpen((prev) => !prev);
 
         if (typeof document !== 'undefined') {
             document.body.style.overflow = !sidebarOpen ? 'hidden' : 'auto';
@@ -51,7 +52,9 @@ export default function Navbar() {
             <div className="logo">Vorifi</div>
             {isMobile ? (
                 <>
-                    <button className="menu-button" onClick={toggleSidebar}>☰</button>
+                    <button className="menu-button" onClick={toggleSidebar}>
+                        ☰
+                    </button>
                     <div
                         className={`sidebar ${sidebarOpen ? 'open' : ''}`}
                         style={{
@@ -59,16 +62,15 @@ export default function Navbar() {
                             visibility: sidebarOpen ? 'visible' : 'hidden',
                         }}
                     >
-                        <button className="close-button" onClick={toggleSidebar}>✕</button>
-                        <a href="#about" onClick={toggleSidebar} data-color>
-                            About
-                        </a>
-                        <a href="#features" onClick={toggleSidebar} data-color>
-                            Features
-                        </a>
-                        <a href="#contact" onClick={toggleSidebar} data-color>
-                            Contact
-                        </a>
+                        <button className="close-button" onClick={toggleSidebar}>
+                            ✕
+                        </button>
+
+                        <Link href="/home">
+                            <div style={{ zIndex: 1000 }}>
+                                Home
+                            </div>
+                        </Link>
                         <div className="auth-buttons">
                             <button
                                 className="sign-in"
@@ -76,7 +78,6 @@ export default function Navbar() {
                                     toggleSidebar();
                                     handleSignIn();
                                 }}
-                                data-color
                             >
                                 Sign In
                             </button>

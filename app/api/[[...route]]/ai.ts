@@ -1,23 +1,32 @@
-import {Message} from "ai";
-import {GoogleGenerativeAI} from "@google/generative-ai";
-import {accounts, categories, transactions} from "@/db/schema";
-import {and, desc, eq, gte, lt, lte, sql, sum} from "drizzle-orm";
-import {db} from "@/db/drizzle";
-import {calculatePercentChange, convertAmountFromMiliunits, fillMissingDays} from "@/lib/utils";
-import {Hono} from "hono";
-import {differenceInDays, parse, subDays} from "date-fns";
-import {clerkMiddleware, getAuth} from "@hono/clerk-auth";
-import {zValidator} from "@hono/zod-validator";
-import {z} from "zod";
-import {v4 as uuidv4} from 'uuid';
+import { Message } from "ai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { accounts, categories, transactions } from "@/db/schema";
+import { and, desc, eq, gte, lt, lte, sql, sum } from "drizzle-orm";
+import { db } from "@/db/drizzle";
+import { calculatePercentChange, convertAmountFromMiliunits, fillMissingDays } from "@/lib/utils";
+import { Hono } from "hono";
+import { differenceInDays, parse, subDays } from "date-fns";
+import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+import { v4 as uuidv4 } from 'uuid';
 
 export const runtime = "edge";
 
-
+/**
+ * Hono app instance for handling AI-related API routes.
+ */
 const app = new Hono();
 
-
 app.use(clerkMiddleware());
+
+/**
+ * GET / - Fetches financial data for the authenticated user within a specified date range.
+ * Requires user to be authenticated.
+ * @param {string} [from] - The start date of the range (optional).
+ * @param {string} [to] - The end date of the range (optional).
+ * @param {string} [accountId] - The ID of the account to filter by (optional).
+ */
 export const GET = app.get(
     "/",
     clerkMiddleware(),
@@ -33,26 +42,21 @@ export const GET = app.get(
         return c.json({ error: "Unauthorized" }, 401);
       }
 
-
       const defaultTo = new Date();
       const defaultFrom = subDays(defaultTo, 30);
       const startDate = from ? parse(from, "yyyy-MM-dd", new Date()) : defaultFrom;
       const endDate = to ? parse(to, "yyyy-MM-dd", new Date()) : defaultTo;
 
-
       const periodLength = differenceInDays(endDate, startDate) + 1;
       const lastPeriodStart = subDays(startDate, periodLength);
       const lastPeriodEnd = subDays(endDate, periodLength);
 
-
       const [currentPeriod] = await fetchFinancialData(auth.userId, startDate, endDate);
       const [lastPeriod] = await fetchFinancialData(auth.userId, lastPeriodStart, lastPeriodEnd);
-
 
       const incomeChange = calculatePercentChange(currentPeriod.income, lastPeriod.income);
       const expensesChange = calculatePercentChange(currentPeriod.expenses, lastPeriod.expenses);
       const remainingChange = calculatePercentChange(currentPeriod.remaining, lastPeriod.remaining);
-
 
       const category = await db
           .select({
@@ -72,12 +76,10 @@ export const GET = app.get(
           ).groupBy(categories.name)
           .orderBy(desc(sql`SUM(ABS(${transactions.amount}))`));
 
-
       const topCategories = category.slice(0, 3);
       const otherCategories = category.slice(3);
       const otherSum = otherCategories.reduce((sum, current) => sum + current.value, 0);
       const finalCategories = [...topCategories];
-
 
       if (otherCategories.length > 0) {
         finalCategories.push({
@@ -85,7 +87,6 @@ export const GET = app.get(
           value: otherSum,
         });
       }
-
 
       const activeDays = await db.select({
         date: transactions.date,
@@ -102,9 +103,7 @@ export const GET = app.get(
               )
           ).groupBy(transactions.date).orderBy(transactions.date);
 
-
       const days = fillMissingDays(activeDays, startDate, endDate);
-
 
       return c.json({
         data: {
@@ -120,6 +119,14 @@ export const GET = app.get(
       });
     }
 );
+
+/**
+ * POST / - Processes a chat message and generates a response using Google Generative AI.
+ * Requires user to be authenticated.
+ * @param {object} body - The request body containing chat messages and images.
+ * @param {Message[]} body.messages - The array of chat messages.
+ * @param {string[]} [body.images] - The array of image data (optional).
+ */
 export const POST = app.post(async (c) => {
   try {
     const reqBody = await c.req.json();
@@ -127,62 +134,57 @@ export const POST = app.post(async (c) => {
     const imageParts = filesArrayToGenerativeParts(images);
     const messages: Message[] = reqBody.messages;
 
-
     if (!messages || messages.length === 0) {
       throw new Error("No content is provided for sending chat message.");
     }
-
 
     const auth = getAuth(c);
     if (!auth?.userId) {
       throw new Error("Unauthorized");
     }
 
-
     const defaultTo = new Date();
     const startDate = subDays(defaultTo, 30);
     const [financialData] = await fetchFinancialData(auth.userId, startDate, defaultTo);
 
-
     const income = convertAmountFromMiliunits(financialData.income || 0);
     const expenses = Math.abs(convertAmountFromMiliunits(financialData.expenses || 0));
 
-
     const userContext = `You are a financial advisor assisting a user with their finances. They have an income of ${income} and expenses of ${expenses} per month.`;
-
 
     let promptWithParts: (string | { inlineData: { data: string; mimeType: string } })[] = [userContext, ...messages.map(message => message.content)];
     if (imageParts.length > 0) {
       promptWithParts = promptWithParts.concat(imageParts);
     }
 
-
     if (promptWithParts.length === 0) {
       throw new Error("No valid content to send to the AI.");
     }
-
 
     const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY!);
     const model = genAI.getGenerativeModel({
       model: "tunedModels/financialadvicedataset-ljf12fi60qq1",
     });
 
-
     const streamingResponse = await model.generateContent(promptWithParts);
     const responseText = streamingResponse.response.text();
-
 
     return new Response(JSON.stringify({ text: responseText }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
 
-
   } catch (error) {
     console.error("Error in POST handler:", error);
     return new Response("Internal Server Error", { status: 500 });
   }
 });
+
+/**
+ * Converts an array of image data strings to generative parts for AI processing.
+ * @param {string[]} images - The array of image data strings.
+ * @returns {Array<{ inlineData: { data: string; mimeType: string } }>} The array of generative parts.
+ */
 function filesArrayToGenerativeParts(images: string[]) {
   return images.map((imageData) => ({
     inlineData: {
@@ -194,6 +196,14 @@ function filesArrayToGenerativeParts(images: string[]) {
     },
   }));
 }
+
+/**
+ * Fetches financial data for a user within a specified date range.
+ * @param {string} userId - The ID of the user.
+ * @param {Date} startDate - The start date of the range.
+ * @param {Date} endDate - The end date of the range.
+ * @returns {Promise<Array<{ income: number, expenses: number, remaining: number }>>} The financial data.
+ */
 async function fetchFinancialData(userId: string, startDate: Date, endDate: Date) {
   return db.select({
     income: sql`SUM(CASE WHEN
@@ -229,6 +239,13 @@ async function fetchFinancialData(userId: string, startDate: Date, endDate: Date
           )
       );
 }
+
+/**
+ * POST /parse - Parses a text input to extract and process financial data.
+ * Requires user to be authenticated.
+ * @param {object} body - The request body containing the text to parse.
+ * @param {string} body.text - The text to parse.
+ */
 app.post('/parse', async (c) => {
   try {
     const { text } = await c.req.json();
@@ -344,8 +361,5 @@ app.post('/parse', async (c) => {
     return c.json({ error: 'Error processing request' }, 500);
   }
 });
-
-
-
 
 export default app;

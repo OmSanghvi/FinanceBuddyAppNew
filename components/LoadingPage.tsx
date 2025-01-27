@@ -4,8 +4,15 @@ import { Loader } from 'lucide-react';
 
 const LoadingPage = () => {
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-100 z-50">
-            <Loader className="size-6 text-slate-300 animate-spin" />
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 z-50">
+            <div className="dots">
+                {/* Add your loading dots or spinner here */}
+                <div className="dot"></div>
+                <div className="dot"></div>
+                <div className="dot"></div>
+                <div className="dot"></div>
+                <div className="dot"></div>
+            </div>
         </div>
     );
 };

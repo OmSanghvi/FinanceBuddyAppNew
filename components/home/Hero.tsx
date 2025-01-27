@@ -35,7 +35,8 @@ export default function Hero() {
                 <h1 className="title-text">Welcome to</h1>
                 <h1 className="main-text">VORIFI</h1>
                 <h2 className="welcome-text">The only fully customizable financial application to manage all your finances all in one place.</h2>
-                <button className="get-started-button">Get Started</button>
+
+                <button className="get-started-button" onClick={() => window.location.href = '/sign-up'}>Get Started</button>
             </div>
             <div className="image-container">
                 <motion.div

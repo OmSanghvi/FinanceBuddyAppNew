@@ -549,3 +549,136 @@ body {
         pointer-events: auto;
     }
 }
+.navbar .menu-button {
+    display: block;
+    font-size: 2.4rem; /* Increase font size */
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: absolute; /* Position the menu button absolutely */
+    right: 20px; /* Move the button to the right */
+    top: 20px; /* Move the button upwards */
+}
+
+@media (max-width: 768px) {
+    .navbar .sidebar {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        background-color: lightblue; /* Set background color to light blue */
+        color: black; /* Set text color to black for better visibility */
+        justify-content: center;
+        align-items: center;
+        z-index: 1002;
+        padding: 20px;
+        font-size: 2rem;
+        transition: transform 0.3s ease-in-out;
+        transform: translateX(100%);
+    }
+
+    .navbar .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .navbar .sidebar a {
+        margin: 20px 0;
+        text-decoration: none;
+        color: black; /* Set text color to black for better visibility */
+        font-size: 1.5rem; /* Adjust font size */
+    }
+
+    .navbar .sidebar .close-button {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: black; /* Set text color to black for better visibility */
+        font-size: 2rem;
+        cursor: pointer;
+    }
+}
+@media (max-width: 768px) {
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background-color: #fff;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .menu-button {
+        font-size: 1.5rem;
+        border: none;
+        background: none;
+        cursor: pointer;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 75%;
+        height: 100%;
+        background-color: #f9f9f9;
+        box-shadow: -2px 0 6px rgba(0, 0, 0, 0.2);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .close-button {
+        align-self: flex-end;
+        font-size: 1.5rem;
+        border: none;
+        background: none;
+        cursor: pointer;
+        margin-bottom: 1rem;
+    }
+
+    .sidebar a {
+        margin: 0.5rem 0;
+        text-decoration: none;
+        font-size: 1.2rem;
+        color: #333;
+    }
+
+    .auth-buttons {
+        margin-top: auto;
+    }
+
+    .auth-buttons button {
+        width: 100%;
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        font-size: 1rem;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .auth-buttons .sign-in {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .auth-buttons .sign-up {
+        background-color: #28a745;
+        color: white;
+    }
+}

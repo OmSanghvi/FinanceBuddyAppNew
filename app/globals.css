@@ -126,3 +126,43 @@
   background-color: inherit;
   transition: none;
 }
+.dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dots .dot {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  border: 2px solid rgb(32, 36, 53);
+  background-color: rgb(74, 177, 250);
+  animation: jump 0.8s ease-in-out infinite alternate;
+}
+
+.dot:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.dot:nth-child(4) {
+  animation-delay: 0.4s;
+}
+
+.dot:nth-child(5) {
+  animation-delay: 0.5s;
+}
+
+@keyframes jump {
+  100% {
+    transform: translateY(-5rem) scale(1.9);
+    background-color: rgb(188, 111, 251);
+  }
+}/*# sourceMappingURL=app.css.map */
