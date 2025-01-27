@@ -35,6 +35,13 @@ const INITIAL_IMPORT_RESULTS = {
     meta: {},
 }
 
+/**
+ * Component for rendering the transactions page.
+ *
+ * This component displays the transactions history, allows adding new transactions, and handles importing transactions.
+ *
+ * @returns {JSX.Element} The rendered transactions page component.
+ */
 const TransactionsPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [AccountDialog, confirm] = useSelectAccount();
@@ -53,16 +60,29 @@ const TransactionsPage = () => {
     const transactions = transactionsQuery.data || [];
     const isDisabled = transactionsQuery.isLoading || deleteTransactions.isPending;
 
+    /**
+     * Handles the upload event for importing transactions.
+     *
+     * @param {typeof INITIAL_IMPORT_RESULTS} results - The results of the import.
+     */
     const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
         setImportResults(results);
         setVariant(VARIANTS.IMPORT);
     };
 
+    /**
+     * Handles the cancel event for the import process.
+     */
     const onCancelImport = () => {
         setImportResults(INITIAL_IMPORT_RESULTS);
         setVariant(VARIANTS.LIST);
     };
 
+    /**
+     * Handles the submit event for the import process.
+     *
+     * @param {typeof transactionsSchema.$inferInsert[]} values - The values to be imported.
+     */
     const onSubmitImport = async (values: typeof transactionsSchema.$inferInsert[]) => {
         const accountId = await confirm();
         if (!accountId) {
@@ -79,6 +99,11 @@ const TransactionsPage = () => {
         });
     };
 
+    /**
+     * Handles the image upload event.
+     *
+     * @param {any} data - The data received from the image upload.
+     */
     const handleImageUpload = (data: any) => {
         if (data && data.date && data.payee && data.amount !== undefined) {
             setTransactionData(data);
@@ -111,6 +136,11 @@ const TransactionsPage = () => {
 
     type FormValues = z.input<typeof formSchema>;
 
+    /**
+     * Handles the submit event for the transaction form.
+     *
+     * @param {FormValues} values - The values to be submitted.
+     */
     const onSubmit = (values: FormValues) => {
         createMutation.mutate(values, { onSuccess: () => { newTransaction.onClose(); } });
     }

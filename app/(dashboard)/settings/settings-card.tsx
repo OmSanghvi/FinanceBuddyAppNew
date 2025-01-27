@@ -15,6 +15,14 @@ import { PlaidDisconnect } from "@/features/plaid/components/plaid-disconnect";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
 
+/**
+ * Component for rendering the settings card.
+ *
+ * This component displays the settings card with information about the connected bank account.
+ * It shows a loading state while fetching the connected bank account data.
+ *
+ * @returns {JSX.Element} The rendered settings card component.
+ */
 export const SettingsCard = () => {
     const {
         data: connectedBank,

@@ -4,6 +4,13 @@ import { SettingsCard } from "@/app/(dashboard)/settings/settings-card";
 import Chat from "@/components/chat";
 import LoadingPage from "@/components/LoadingPage";
 
+/**
+ * Component for rendering the settings page.
+ *
+ * This component displays the settings card and chat component. It also handles the loading state.
+ *
+ * @returns {JSX.Element} The rendered settings page component.
+ */
 const SettingsPage = () => {
     const [isLoading] = useState(false);
 

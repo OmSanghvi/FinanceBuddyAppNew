@@ -6,6 +6,14 @@ import Contact from "@/components/home/Contact"
 import AboutMe from "@/components/home/AboutMe";
 import Skills from "@/components/home/Skills";
 
+/**
+ * Component for rendering the home page.
+ *
+ * This component displays the home page with a navbar, hero section, contact section, about me section, and skills section.
+ * It also simulates a loading state for 2 seconds.
+ *
+ * @returns {JSX.Element} The rendered home page component.
+ */
 export default function Home() {
     const [loading, setLoading] = useState(true);
 

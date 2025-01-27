@@ -13,6 +13,13 @@ import { useBulkDeleteAccounts } from "@/features/accounts/api/use-bulk-delete-a
 import Chat from "@/components/chat";
 import LoadingPage from "@/components/LoadingPage";
 
+/**
+ * Component for rendering the accounts page.
+ *
+ * This component fetches and displays a list of accounts, with options to add new accounts and delete existing ones.
+ *
+ * @returns {JSX.Element} The rendered accounts page component.
+ */
 const AccountsPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const newAccount = useNewAccount();

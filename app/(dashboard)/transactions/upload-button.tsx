@@ -10,11 +10,28 @@ type Props = {
     onImageUpload: (data: any) => void;
 }
 
+/**
+ * Component for rendering the upload button.
+ *
+ * This component provides buttons for importing CSV files and images, and handles the file upload process.
+ *
+ * @param {Props} props - The component props.
+ * @param {(results: any) => void} props.onUpload - The function to call when a CSV file is uploaded.
+ * @param {(data: any) => void} props.onImageUpload - The function to call when an image file is uploaded.
+ * @returns {JSX.Element} The rendered upload button component.
+ */
 export const UploadButton = ({ onUpload, onImageUpload }: Props) => {
     const newTransaction = useNewTransaction();
     const { CSVReader } = useCSVReader();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
+    /**
+     * Handles the file change event.
+     *
+     * This function processes the uploaded file, either scanning it if it's an image or logging an error for unsupported file types.
+     *
+     * @param {React.ChangeEvent<HTMLInputElement>} event - The file change event.
+     */
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
@@ -33,6 +50,11 @@ export const UploadButton = ({ onUpload, onImageUpload }: Props) => {
         }
     };
 
+    /**
+     * Handles the button click event.
+     *
+     * This function triggers the file input click event.
+     */
     const handleButtonClick = () => {
         fileInputRef.current?.click();
     };

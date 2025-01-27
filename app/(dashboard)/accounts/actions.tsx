@@ -8,48 +8,62 @@ import { useDeleteAccount } from "@/features/accounts/api/use-delete-account";
 import { useConfirm } from "@/hooks/use-confirm";
 
 type Props = {
-    id:string;
+    id: string;
 };
 
-export const Actions = ({id}: Props) => {
-    const [ConfirmDialog,confirm] = useConfirm(
+/**
+ * Component for rendering account actions in a dropdown menu.
+ *
+ * @param {Props} props - The component props.
+ * @param {string} props.id - The ID of the account.
+ * @returns {JSX.Element} The rendered actions component.
+ */
+export const Actions = ({ id }: Props) => {
+    const [ConfirmDialog, confirm] = useConfirm(
         "Are you sure?",
         "You are about to delete this account."
-    )
+    );
     const deleteMutation = useDeleteAccount(id);
-    const {onOpen} = useOpenAccount();
-    const handleDelete = async () =>{
+    const { onOpen } = useOpenAccount();
+
+    /**
+     * Handles the delete action for the account.
+     *
+     * @returns {Promise<void>} A promise that resolves when the delete action is complete.
+     */
+    const handleDelete = async () => {
         const ok = await confirm();
-        if(ok){
+        if (ok) {
             deleteMutation.mutate();
         }
-    }
-    return ( 
+    };
+
+    return (
         <>
-        <ConfirmDialog/>
+            <ConfirmDialog />
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="size-8 p-0">
-                        <MoreHorizontal className="size-4"/>
+                        <MoreHorizontal className="size-4" />
                     </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align = "end">
+                <DropdownMenuContent align="end">
                     <DropdownMenuItem
-                    disabled = {deleteMutation.isPending}
-                    onClick = {()=>onOpen(id)}
+                        disabled={deleteMutation.isPending}
+                        onClick={() => onOpen(id)}
                     >
-                        <Edit className="size-4 mr-2"/>
+                        <Edit className="size-4 mr-2" />
                         Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                    disabled = {deleteMutation.isPending}
-                    onClick = {handleDelete}
+                        disabled={deleteMutation.isPending}
+                        onClick={handleDelete}
                     >
-                        <Trash className="size-4 mr-2"/>
+                        <Trash className="size-4 mr-2" />
                         Delete
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
         </>
-     );
-}
+    );
+};

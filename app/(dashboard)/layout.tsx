@@ -17,6 +17,15 @@ type Props = {
     children: React.ReactNode;
 };
 
+/**
+ * Component for rendering the dashboard layout.
+ *
+ * This component provides the layout for the dashboard, including the sidebar and header.
+ *
+ * @param {Props} props - The component props.
+ * @param {React.ReactNode} props.children - The child components to be rendered within the layout.
+ * @returns {JSX.Element} The rendered dashboard layout component.
+ */
 const DashboardLayout = ({ children }: Props) => {
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
     const [currentPath, setCurrentPath] = useState('');
@@ -40,6 +49,11 @@ const DashboardLayout = ({ children }: Props) => {
         { href: "/settings", label: "Settings" }
     ];
 
+    /**
+     * Handles the click event for navigation links.
+     *
+     * @param {string} href - The URL to navigate to.
+     */
     const onClick = (href: string) => {
         setIsOpen(false);
         window.location.href = href;

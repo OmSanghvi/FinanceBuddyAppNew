@@ -13,6 +13,13 @@ import { useBulkDeleteCategories } from "@/features/categories/api/use-bulk-dele
 import Chat from "@/components/chat";
 import LoadingPage from "@/components/LoadingPage";
 
+/**
+ * Component for rendering the categories page.
+ *
+ * This component fetches and displays a list of categories, with options to add new categories and delete existing ones.
+ *
+ * @returns {JSX.Element} The rendered categories page component.
+ */
 const CategoriesPage = () => {
     const [isLoading, setIsLoading] = useState(true);
     const newCategory = useNewCategory();
