@@ -41,21 +41,30 @@ body {
     overflow-x: hidden; /* Prevent horizontal overflow */
 }
 
-.hero img {
-    width: 75%;
-    height: auto;
-    border-radius: 10px;
-    transition: all 0.3s ease;
-    margin-bottom: 40px;
-}
-
 .hero-text {
     text-align: center;
     color: white;
-    font-size: 64px; /* Set text color to white */
+    font-size: 64px;
     font-family: "Lilita One", sans-serif;
     font-weight: 400;
     font-style: normal;
+    margin-bottom: 40px; /* Increase margin to separate from other text */
+}
+
+.title-text {
+    font-size: 3.2rem; /* Adjusted size */
+    font-family: "Lilita One", sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    margin-bottom: 20px; /* Add margin to separate from other text */
+}
+
+.main-text {
+    font-size: 10rem; /* Adjusted size */
+    font-family: "Lilita One", sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    margin-bottom: 40px; /* Increase margin to separate from other text */
 }
 
 .welcome-text {
@@ -67,20 +76,7 @@ body {
     white-space: pre-wrap; /* Preserve whitespace and allow wrapping */
     word-break: break-word; /* Break words if necessary */
     padding: 0 25vw;
-}
-
-.title-text {
-    font-size: 3.2rem; /* Adjusted size */
-    font-family: "Lilita One", sans-serif;
-    font-style: normal;
-    font-weight: bold;
-}
-
-.main-text {
-    font-size: 10rem; /* Adjusted size */
-    font-family: "Lilita One", sans-serif;
-    font-style: normal;
-    font-weight: bold;
+    margin-bottom: 40px; /* Increase margin to separate from other text */
 }
 
 .get-started-button {

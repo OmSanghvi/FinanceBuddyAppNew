@@ -242,7 +242,7 @@ export const HomePage = () => {
                 </div>
             </section>
 
-            {/* Features Section */}
+            {/* AboutMe Section */}
             <section className="features">
                 <h2>Features Designed for Your Financial Success</h2>
                 <div className="features-list">

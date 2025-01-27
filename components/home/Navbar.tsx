@@ -97,10 +97,10 @@ export default function Navbar() {
             ) : (
                 <>
                     <div className="links">
-                        <a className="ml-10" href="#about" data-color>
+                        <a className="ml-10" href="#AboutMe" data-color>
                             About
                         </a>
-                        <a className="ml-10" href="#features" data-color>
+                        <a className="ml-10" href="#Skills" data-color>
                             Features
                         </a>
                         <a className="ml-10" href="#contact" data-color>
