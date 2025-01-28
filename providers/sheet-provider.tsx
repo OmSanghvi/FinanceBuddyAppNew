@@ -6,9 +6,20 @@ import { NewCategorySheet } from "@/features/categories/components/new-category-
 import { EditCategorySheet } from "@/features/categories/components/edit-category-sheet"
 import { NewTransactionSheet } from "@/features/transactions/components/new-transaction-sheet"
 import { EditTransactionSheet } from "@/features/transactions/components/edit-transaction-sheet"
-export const SheetProvider = ()=>{
+
+/**
+ * Component that provides various sheets for creating and editing accounts, categories, and transactions.
+ * It ensures that the sheets are only rendered when the component is mounted.
+ *
+ * @returns {JSX.Element | null} The rendered SheetProvider component or null if not mounted.
+ */
+export const SheetProvider = () => {
+    // Hook to check if the component is mounted
     const isMounted = useMountedState();
-    if(!isMounted) return null;
+
+    // Return null if the component is not mounted
+    if (!isMounted) return null;
+
     return (
         <>
             <NewAccountSheet />

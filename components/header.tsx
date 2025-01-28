@@ -13,6 +13,14 @@ import { MdAccountBalance, MdCategory, MdDashboard, MdReceipt, MdSettings } from
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 
+/**
+ * Header component for displaying the header section of the application.
+ *
+ * This component includes the logo, user button, welcome message, filters, and a sidebar toggle button for mobile view.
+ * It also handles theme changes and updates the current path based on the navigation.
+ *
+ * @returns {JSX.Element} The rendered Header component.
+ */
 export const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
@@ -51,6 +59,9 @@ export const Header = () => {
         { href: "/settings", label: "Settings" }
     ];
 
+    /**
+     * Toggles the sidebar open and close state.
+     */
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
         setIsSidebarExpanded(!isSidebarExpanded);

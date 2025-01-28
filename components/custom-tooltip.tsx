@@ -1,9 +1,19 @@
-import {format} from "date-fns";
+import { format } from "date-fns";
 import { formatCurrency } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 
-export const CustomTooltip = ({active,payload}:any)=>{
-    if(!active) return null;
+/**
+ * Component for rendering a custom tooltip for displaying date, income, and expenses.
+ *
+ * This component displays a tooltip with formatted date, income, and expenses values.
+ *
+ * @param {Object} props - The properties for the CustomTooltip component.
+ * @param {boolean} props.active - Whether the tooltip is active.
+ * @param {Array} props.payload - The payload data for the tooltip.
+ * @returns {JSX.Element | null} The rendered CustomTooltip component or null if not active.
+ */
+export const CustomTooltip = ({ active, payload }: any) => {
+    if (!active) return null;
     const date = payload[0].payload.date;
     const income = payload[0].value;
     const expenses = payload[1].value;
@@ -13,11 +23,11 @@ export const CustomTooltip = ({active,payload}:any)=>{
             <div className="text-sm p-2 px-3 bg-muted text-muted-foreground">
                 {format(date, "MMM dd, yyyy")}
             </div>
-            <Separator/>
+            <Separator />
             <div className="p-2 px-3 space-y-1">
                 <div className="flex items-center justify-between gap-x-4">
                     <div className="flex items-center gap-x-2">
-                        <div className="size-1.5 bg-blue-500 rounded-full"/>
+                        <div className="size-1.5 bg-blue-500 rounded-full" />
                         <p className="text-sm text-muted-foreground">
                             Income
                         </p>
@@ -28,16 +38,16 @@ export const CustomTooltip = ({active,payload}:any)=>{
                 </div>
                 <div className="flex items-center justify-between gap-x-4">
                     <div className="flex items-center gap-x-2">
-                        <div className="size-1.5 bg-rose-500 rounded-full"/>
+                        <div className="size-1.5 bg-rose-500 rounded-full" />
                         <p className="text-sm text-muted-foreground">
                             Expenses
                         </p>
                     </div>
                     <p className="text-sm text-right font-medium">
-                        {formatCurrency(expenses*-1)}
+                        {formatCurrency(expenses * -1)}
                     </p>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};

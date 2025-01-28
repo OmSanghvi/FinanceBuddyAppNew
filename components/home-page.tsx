@@ -1,5 +1,13 @@
 import React from 'react';
 
+/**
+ * HomePage component for displaying the home page of the application.
+ *
+ * This component includes the header, hero section, value proposition, features, and call to action sections.
+ * It also includes general styles for the page.
+ *
+ * @returns {JSX.Element} The rendered HomePage component.
+ */
 export const HomePage = () => {
     return (
         <>
@@ -20,7 +28,7 @@ export const HomePage = () => {
                     text-decoration: none;
                     color: inherit;
                 }
-                
+
                 /* Header Section */
                 header {
                     background-color: #fff;
@@ -54,7 +62,7 @@ export const HomePage = () => {
                     background-color: transparent;
                     color: #3b82f6;
                 }
-                
+
                 /* Hover Effects for Buttons */
                 button, a.button {
                     padding: 15px 30px;
@@ -82,7 +90,7 @@ export const HomePage = () => {
                     color: white;
                     transform: scale(1.05);
                 }
-                
+
                 /* Hero Section */
                 .hero {
                     background: url('hero-image.jpg') no-repeat center center/cover;
@@ -104,7 +112,7 @@ export const HomePage = () => {
                     line-height: 1.5;
                     color: #333;
                 }
-                
+
                 /* Value Proposition */
                 .value-proposition {
                     padding: 80px 20px;
@@ -137,7 +145,7 @@ export const HomePage = () => {
                 .value-proposition p {
                     color: #555;
                 }
-                
+
                 /* Features Section */
                 .features {
                     padding: 80px 20px;
@@ -170,7 +178,7 @@ export const HomePage = () => {
                 .feature p {
                     color: #555;
                 }
-                
+
                 /* Call to Action Section */
                 .cta {
                     padding: 80px 20px;
@@ -185,7 +193,7 @@ export const HomePage = () => {
                     justify-content: center;
                     gap: 20px;
                 }
-                
+
                 /* Responsiveness */
                 @media (max-width: 768px) {
                     .value-cards, .features-list {
@@ -204,8 +212,8 @@ export const HomePage = () => {
             <header>
                 <div className="logo">Vorifi</div>
                 <div className="auth-buttons">
-                <a href="/sign-up?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F" className="button">Sign Up</a>
-                <a href="/sign-in?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F" className="button">Login</a>
+                    <a href="/sign-up?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F" className="button">Sign Up</a>
+                    <a href="/sign-in?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F" className="button">Login</a>
                 </div>
             </header>
 
@@ -214,12 +222,12 @@ export const HomePage = () => {
                 <h1>Empower Your Financial Future with Vorifi</h1>
                 <p>Manage Your Wealth Smarter with Expert Guidance and AI-Powered Insights. Make Confident Decisions for Your Financial Journey.</p>
                 <div className="cta-buttons">
-                <a href="/sign-up?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F">
-                    <button className="cta-signup">Sign Up Now</button>
-                </a>
-                <a href="/sign-in?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F">
-                    <button className="cta-signup">Login</button>
-                </a>
+                    <a href="/sign-up?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F">
+                        <button className="cta-signup">Sign Up Now</button>
+                    </a>
+                    <a href="/sign-in?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F">
+                        <button className="cta-signup">Login</button>
+                    </a>
                 </div>
             </section>
 
@@ -242,7 +250,7 @@ export const HomePage = () => {
                 </div>
             </section>
 
-            {/* AboutMe Section */}
+            {/* Features Section */}
             <section className="features">
                 <h2>Features Designed for Your Financial Success</h2>
                 <div className="features-list">
@@ -265,9 +273,9 @@ export const HomePage = () => {
             <section className="cta">
                 <h2>Ready to Transform Your Financial Future?</h2>
                 <div className="cta-buttons">
-                <a href="/sign-up?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F">
-                    <button className="cta-signup">Sign Up Now</button>
-                </a>
+                    <a href="/sign-up?redirect_url=https%3A%2F%2Fvorifi.vercel.app%2F">
+                        <button className="cta-signup">Sign Up Now</button>
+                    </a>
                 </div>
             </section>
         </>

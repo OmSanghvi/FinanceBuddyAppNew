@@ -1,5 +1,13 @@
 import "./home.css"
 import Contact from "@/components/home/Contact";
+
+/**
+ * Component for rendering the About Me section.
+ *
+ * This component displays the About Me section with an image and descriptive text.
+ *
+ * @returns {JSX.Element} The rendered About Me section component.
+ */
 function AboutMe() {
     return (
         <section id="AboutMe" className="about--section">
@@ -26,4 +34,5 @@ function AboutMe() {
         </section>
     );
 }
+
 export default AboutMe;

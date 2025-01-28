@@ -3,16 +3,37 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import SelectedImages from "./selectedImages";
 import { ChatRequestOptions, Message } from "ai";
 
+/**
+ * Props for the InputForm component.
+ *
+ * @typedef {Object} Props
+ * @property {function} handleInputChange - Function to handle input change events.
+ * @property {function} handleSubmit - Function to handle form submission.
+ * @property {string} input - The current input value.
+ * @property {boolean} isLoading - Indicates if the form is in a loading state.
+ * @property {function} stop - Function to stop the loading state.
+ * @property {function} addMessage - Function to add a new message.
+ * @property {boolean} isDarkMode - Indicates if the dark mode is enabled.
+ */
 type Props = {
     handleInputChange: (e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>) => void;
     handleSubmit: (e: FormEvent<HTMLFormElement>, chatRequestOptions?: ChatRequestOptions) => void;
     input: string;
     isLoading: boolean;
     stop: () => void;
-    addMessage: (newMessage: Message) => void; // Ensure this prop is typed correctly
-    isDarkMode: boolean; // Add this prop
+    addMessage: (newMessage: Message) => void;
+    isDarkMode: boolean;
 };
 
+/**
+ * InputForm component for handling user input and form submission.
+ *
+ * This component includes an input field, image selection, and a submit button.
+ * It handles image selection and form submission, and displays a loading state when necessary.
+ *
+ * @param {Props} props - The properties for the InputForm component.
+ * @returns {JSX.Element} The rendered InputForm component.
+ */
 const InputForm = ({
                        handleInputChange,
                        handleSubmit,
@@ -24,6 +45,11 @@ const InputForm = ({
                    }: Props) => {
     const [images, setImages] = useState<string[]>([]);
 
+    /**
+     * Handles the selection of images and converts them to base64 strings.
+     *
+     * @param {ChangeEvent<HTMLInputElement>} event - The change event from the file input.
+     */
     const handleImageSelection = async (event: ChangeEvent<HTMLInputElement>) => {
         const files = event.target.files;
         if (!files) return;

@@ -2,6 +2,14 @@ import React from "react";
 import PizzaLeft from "@/public/logo.svg";
 import "./home.css";
 
+/**
+ * Component for rendering the Contact section.
+ *
+ * This component displays a contact form with fields for first name, last name, email, phone number, topic selection, and message.
+ * It also includes a checkbox for accepting terms and a submit button.
+ *
+ * @returns {JSX.Element} The rendered Contact section component.
+ */
 function Contact() {
     return (
         <section id="Contact" className="contact--section">

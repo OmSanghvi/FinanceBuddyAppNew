@@ -17,6 +17,15 @@ import "react-resizable/css/styles.css";
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
+/**
+ * DashboardClient component for rendering the dashboard with various cards and charts.
+ *
+ * This component fetches summary data and displays it in a responsive grid layout.
+ * It includes income, expenses, remaining balance cards, and charts for data visualization.
+ * The layout can be edited and saved to local storage.
+ *
+ * @returns {JSX.Element | null} The rendered DashboardClient component or null if loading or on the server.
+ */
 export default function DashboardClient() {
     const { data, isLoading } = useGetSummary();
     const params = useSearchParams();
@@ -58,6 +67,12 @@ export default function DashboardClient() {
         }
     }, [accountId]);
 
+    /**
+     * Handles layout changes and saves the layout to state and local storage.
+     *
+     * @param {Array} currentLayout - The current layout.
+     * @param {Object} allLayouts - All layouts for different breakpoints.
+     */
     const handleLayoutChange = (currentLayout: any, allLayouts: any) => {
         setLayouts(allLayouts);
         if (!isEditMode) {
@@ -65,6 +80,9 @@ export default function DashboardClient() {
         }
     };
 
+    /**
+     * Toggles the edit mode and saves the layout to local storage if exiting edit mode.
+     */
     const toggleEditMode = () => {
         setIsEditMode(!isEditMode);
         if (isEditMode) {

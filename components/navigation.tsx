@@ -8,6 +8,13 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useMedia } from "react-use";
 import { Button } from '@/components/ui/button';
 
+/**
+ * Array of route objects for the sidebar navigation.
+ *
+ * @typedef {Object} Route
+ * @property {string} href - The URL path of the route.
+ * @property {string} label - The label to display for the route.
+ */
 const routes = [
     { href: "/", label: "Overview" },
     { href: "/transactions", label: "Transactions" },
@@ -17,6 +24,14 @@ const routes = [
     { href: "/stocks", label: "Stocks" }
 ];
 
+/**
+ * Custom appearance settings for the UserButton component.
+ *
+ * @typedef {Object} UserButtonAppearance
+ * @property {string} userButtonAvatarBox - Custom width and height for the avatar box.
+ * @property {string} userButtonPopoverCard - Custom background for the popover card.
+ * @property {string} userButtonPopoverActionButton - Custom text color for action buttons.
+ */
 const userButtonAppearance = {
     elements: {
         userButtonAvatarBox: "w-10 h-10", // Custom width and height
@@ -25,14 +40,38 @@ const userButtonAppearance = {
     },
 };
 
+/**
+ * Context for managing the sidebar state.
+ *
+ * @typedef {Object} SidebarContextType
+ * @property {boolean} expanded - Indicates if the sidebar is expanded.
+ */
 const SidebarContext = createContext<{ expanded: boolean }>({ expanded: true });
 
+/**
+ * Props for the Sidebar component.
+ *
+ * @typedef {Object} SidebarProps
+ * @property {ReactNode} children - The child components to be rendered inside the sidebar.
+ * @property {boolean} expanded - Indicates if the sidebar is expanded.
+ * @property {function} setExpanded - Function to set the expanded state of the sidebar.
+ */
 interface SidebarProps {
     children: ReactNode;
     expanded: boolean;
     setExpanded: (expanded: boolean) => void;
 }
 
+/**
+ * Props for the SidebarItem component.
+ *
+ * @typedef {Object} SidebarItemProps
+ * @property {ReactNode} icon - The icon to be displayed for the sidebar item.
+ * @property {string} text - The text label for the sidebar item.
+ * @property {boolean} active - Indicates if the sidebar item is active.
+ * @property {boolean} alert - Indicates if the sidebar item has an alert.
+ * @property {number} [iconSize=24] - The size of the icon.
+ */
 interface SidebarItemProps {
     icon: ReactNode;
     text: string;
@@ -41,6 +80,12 @@ interface SidebarItemProps {
     iconSize?: number;
 }
 
+/**
+ * SidebarItem component for rendering an individual item in the sidebar.
+ *
+ * @param {SidebarItemProps} props - The properties for the SidebarItem component.
+ * @returns {JSX.Element} The rendered SidebarItem component.
+ */
 export function SidebarItem({ icon, text, active, alert, iconSize = 24 }: SidebarItemProps) {
     const { expanded } = useContext(SidebarContext);
     return (
@@ -69,6 +114,12 @@ export function SidebarItem({ icon, text, active, alert, iconSize = 24 }: Sideba
     );
 }
 
+/**
+ * Sidebar component for rendering the sidebar navigation.
+ *
+ * @param {SidebarProps} props - The properties for the Sidebar component.
+ * @returns {JSX.Element} The rendered Sidebar component.
+ */
 export default function Sidebar({ children, expanded, setExpanded }: SidebarProps) {
     const { user } = useUser();
     const router = useRouter();

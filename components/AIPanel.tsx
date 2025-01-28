@@ -12,6 +12,14 @@ interface AIPanelProps {
   onClose: () => void;
 }
 
+/**
+ * Component for rendering the AI Panel.
+ *
+ * This component displays an AI chatbot panel with message input, message display, and voice recognition capabilities.
+ *
+ * @param {AIPanelProps} props - The properties for the AI Panel component.
+ * @returns {JSX.Element | null} The rendered AI Panel component or null if not open.
+ */
 const AIPanel: React.FC<AIPanelProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");  // Final text message
@@ -81,14 +89,29 @@ const AIPanel: React.FC<AIPanelProps> = ({ isOpen, onClose }) => {
     };
   }, []);
 
+  /**
+   * Adds a new message to the messages state.
+   *
+   * @param {Message} newMessage - The new message to add.
+   */
   const addMessage = (newMessage: Message) => {
     setMessages((prevMessages) => [...prevMessages, newMessage]);
   };
 
+  /**
+   * Handles the input change event for the message input field.
+   *
+   * @param {ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} e - The input change event.
+   */
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInputMessage(e.target.value);
   };
 
+  /**
+   * Handles the form submit event for sending a message.
+   *
+   * @param {FormEvent<HTMLFormElement>} e - The form submit event.
+   */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -151,6 +174,9 @@ const AIPanel: React.FC<AIPanelProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  /**
+   * Starts the speech recognition for voice input.
+   */
   const startListening = () => {
     if (recognitionRef.current) {
       setIsListening(true);
@@ -158,6 +184,9 @@ const AIPanel: React.FC<AIPanelProps> = ({ isOpen, onClose }) => {
     }
   };
 
+  /**
+   * Stops the speech recognition for voice input.
+   */
   const stopListening = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();

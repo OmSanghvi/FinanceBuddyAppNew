@@ -4,10 +4,22 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import img from './img.png'; // Adjust the path as necessary
 
+/**
+ * Component for rendering the Hero section.
+ *
+ * This component displays the Hero section with a welcome message and an image that tilts based on mouse movement.
+ *
+ * @returns {JSX.Element} The rendered Hero section component.
+ */
 export default function Hero() {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     const [isHovered, setIsHovered] = useState(false);
 
+    /**
+     * Handles mouse movement over the image container.
+     *
+     * @param {React.MouseEvent<HTMLDivElement, MouseEvent>} event - The mouse event.
+     */
     const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         const { clientX, clientY, currentTarget } = event;
         const { left, top, width, height } = currentTarget.getBoundingClientRect();
@@ -22,6 +34,13 @@ export default function Hero() {
         }
     };
 
+    /**
+     * Calculates the rotation angles based on mouse position.
+     *
+     * @param {number} x - The x-coordinate of the mouse position.
+     * @param {number} y - The y-coordinate of the mouse position.
+     * @returns {Object} The rotation angles for the x and y axes.
+     */
     const calcRotation = (x: number, y: number) => {
         const maxTilt = 1; // Further reduced maximum tilt angle
         const tiltX = -(y / 100) * maxTilt; // Inverted tilt

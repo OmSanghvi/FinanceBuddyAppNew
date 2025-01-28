@@ -8,12 +8,22 @@ import { Button } from "@/components/ui/button";
 import { useCreateLinkToken } from "@/features/plaid/api/use-create-link-token";
 import { useExchangePublicToken } from "@/features/plaid/api/use-exchange-public-token";
 
+/**
+ * Component for connecting to Plaid.
+ * It handles the creation of a link token, exchanges the public token, and opens the Plaid Link interface.
+ *
+ * @returns {JSX.Element} The rendered PlaidConnect component.
+ */
 export const PlaidConnect = () => {
+    // State to store the link token
     const [token, setToken] = useState<string | null>(null);
 
+    // Hook to create a link token
     const createLinkToken = useCreateLinkToken();
+    // Hook to exchange the public token
     const exchangePublicToken = useExchangePublicToken();
 
+    // Effect to create a link token on mount
     useMount(() => {
         createLinkToken.mutate(undefined, {
             onSuccess: ({ data }) => {
@@ -22,6 +32,7 @@ export const PlaidConnect = () => {
         });
     });
 
+    // Hook to initialize Plaid Link
     const plaid = usePlaidLink({
         token: token,
         onSuccess: (publicToken) => {
@@ -32,16 +43,17 @@ export const PlaidConnect = () => {
         env: "sandbox",
     });
 
-
-
+    /**
+     * Handles the button click to open Plaid Link.
+     */
     const onClick = () => {
-
         plaid.open();
     };
 
+    // Determine if the button should be disabled
     const isDisabled =
         !plaid.ready ||
-        exchangePublicToken.isPending
+        exchangePublicToken.isPending;
 
     return (
         <Button
@@ -52,5 +64,5 @@ export const PlaidConnect = () => {
         >
             Connect
         </Button>
-    )
-}
+    );
+};
